@@ -1,0 +1,48 @@
+# API call for register a user
+###
+POST http://127.0.0.1:8000/user
+Content-Type: application/json
+
+{
+    "username":"user4",
+    "email":"user4@gmail.com",
+    # "password":"user2123",
+    "phone":"8978960000",
+    "password1":"user4123",
+    "password2":"user4123"
+}
+
+
+# API call for token authentication (email,password),(phn,password)
+###
+POST http://127.0.0.1:8000/token 
+Content-Type: application/json
+
+{
+    "username":"user2@gmail.com",
+    "password":"user2123"
+}
+
+###
+@token=0f96881a3a7e40d573daf98b153b61ed8c3ed77f
+
+# API call for profile create
+###
+POST http://127.0.0.1:8000/profile
+Content-Type: application/json
+Authorization: Token {{token}} 
+
+{
+    "age":23,
+    "weight":38.4,
+    "height":1.47,
+    "gender":"female",
+    "activity_level":"active",
+    "goal":"weight_gain"
+}
+
+
+# APi call for profile detail view
+###
+GET http://127.0.0.1:8000/detail 
+Authorization: Token {{token}}
