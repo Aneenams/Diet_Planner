@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from dietApp.models import User,Profile
+from dietApp.models import User,Profile,FoodLog
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -23,3 +23,10 @@ class ProfileSerializer(serializers.ModelSerializer):
         model=Profile
         fields="__all__"
         read_only_fields=['id','user','daily_calorie_goal','bmi','created_at']
+
+class FoodLogSerializer(serializers.ModelSerializer):
+    user=serializers.StringRelatedField(read_only=True)
+    class Meta:
+        model=FoodLog
+        fields="__all__"
+        read_only_field=['id','user','created_at','updated_at']

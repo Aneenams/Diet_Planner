@@ -25,4 +25,6 @@ urlpatterns = [
     path('token',authview.obtain_auth_token),
     path('profile',views.ProfileCreateListView.as_view()),
     path('detail',views.ProfileDetailView.as_view()),
+    path('foodlog',views.FoodLogCreateListView.as_view()),
+    path('foodlog/detail/<int:id>',views.FoodLogCreateListView.as_view()),
 ]
