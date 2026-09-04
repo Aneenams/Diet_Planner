@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from dietApp import views
 from rest_framework.authtoken import views as authview
+from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,6 +26,9 @@ urlpatterns = [
     path('token',authview.obtain_auth_token),
     path('profile',views.ProfileCreateListView.as_view()),
     path('detail',views.ProfileDetailView.as_view()),
-    path('foodlog',views.FoodLogCreateListView.as_view()),
-    path('foodlog/detail/<int:id>',views.FoodLogCreateListView.as_view()),
+    path('foodlog/',views.FoodLogCreateListView.as_view()),
+    # path('foodlog/detail/<int:id>',views.FoodLogCreateListView.as_view()),
+    path('foodlog/detail/<int:pk>',views.FoodLogDetailView.as_view()),
+    path('access',TokenObtainPairView.as_view()),
+    path('refresh',TokenRefreshView.as_view())
 ]
