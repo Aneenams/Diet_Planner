@@ -4,27 +4,27 @@ POST http://127.0.0.1:8000/user
 Content-Type: application/json
 
 {
-    "username":"user4",
-    "email":"user4@gmail.com",
-    # "password":"user2123",
-    "phone":"8978960000",
-    "password1":"user4123",
-    "password2":"user4123"
+    "username":"user5",
+    "email":"user5@gmail.com",
+    # "password":"user5123",
+    "phone":"8978900000",
+    "password1":"user5123",
+    "password2":"user5123"
 }
 
 
-# API call for token authentication (email,password),(phn,password)
+# API call for token authentication (email,password),(phn,password) 8978967890-user1
 ###
 POST http://127.0.0.1:8000/token 
 Content-Type: application/json
 
 {
-    "username":"user1@gmail.com",
-    "password":"user1123"
+    "username":"user5@gmail.com",
+    "password":"user5123"
 }
 
 ###
-@token=ec5692b1460d8ac6c2d241501c93cdf423715c85
+@token=39d122e88d4f5dfc5116c7bd29eeef94ab427e54
 
 # API call for profile create
 ###
@@ -33,12 +33,12 @@ Content-Type: application/json
 Authorization: Token {{token}} 
 
 {
-    "age":23,
-    "weight":58.4,
-    "height":1.67,
+    "age":30,
+    "weight":59,
+    "height":1.69,
     "gender":"male",
     "activity_level":"active",
-    "goal":"weight_gain"
+    "goal":"maintenance"
 }
 
 
@@ -54,11 +54,11 @@ Content-Type: application/json
 Authorization: Token {{token}}
 
 {
-  "id": 4,
-  "user": "user1",
-  "age": 25,
+  "id": 5,
+  "user": "user5",
+  "age": 23,
   "gender": "male",
-  "weight": "59.40",
+  "weight": "58.40",
   "height": "1.67",
   "target_weight": null,
   "duration": null,
@@ -67,19 +67,19 @@ Authorization: Token {{token}}
   "daily_calories_goal": 3118,
   "profile_pic": null,
   "bmi": "20.94",
-  "created_at": "2026-09-03T11:27:52.060530Z"
+  "created_at": "2026-09-04T11:53:28.072353Z"
 }
 
 
 
 # API call for  foodlog create
 ###
-POST http://127.0.0.1:8000/foodlog
+POST http://127.0.0.1:8000/foodlog/
 Content-Type: application/json
 Authorization: Token {{token}}
 
 {
-    "title":"oats",
+    "title":"chappathi",
     "meal_type":"break fast",
     "quantity":"100g",
     "calories":"300"
@@ -88,7 +88,7 @@ Authorization: Token {{token}}
 
 # API call for foodlog list view
 ###
-GET http://127.0.0.1:8000/foodlog
+GET http://127.0.0.1:8000/foodlog/
 Authorization: Token {{token}}
 
 
@@ -97,3 +97,91 @@ Authorization: Token {{token}}
 ###
 GET http://127.0.0.1:8000/foodlog/detail/1
 Authorization: Token {{token}}
+
+
+# API call for listing food log from 2026-09-03 to 2026-09-04
+# ? - optional query parameters
+
+###
+GET http://127.0.0.1:8000/foodlog/?start_date=2026-09-05&end_date=2026-09-06
+Authorization: Token {{token}}
+
+
+#- APi  call for listing foodlog of yesterday
+###
+GET http://127.0.0.1:8000/foodlog/?filter_type=yesterday
+Authorization: Token {{token}}
+
+
+#- APi  call for listing foodlog of last week
+###
+GET http://127.0.0.1:8000/foodlog/?filter_type=seven_day
+Authorization: Token {{token}}
+
+
+
+# API call for foodlog detail
+
+###
+GET http://127.0.0.1:8000/foodlog/detail/5
+# Authorization: Token {{token}}
+Authorization: Bearer {{access_token}}
+
+
+# API call for update
+###
+PUT  http://127.0.0.1:8000/foodlog/detail/3
+Content-Type: application/json
+Authorization: Token {{token}}
+
+  {
+    "id": 4,
+    "user": "user1",
+    "title": "milk",
+    "image": null,
+    "meal_type": "break fast",
+    "quantity": "100g",
+    "calories": 300,
+    "protien": null,
+    "consumed_at": null,
+    "created_at": "2026-09-04T10:15:48.477363Z",
+    "updated_at": "2026-09-04T10:15:48.477363Z"
+  }
+
+# API call for delete
+###
+DELETE http://127.0.0.1:8000/foodlog/detail/1
+Authorization: Token {{token}}
+
+
+
+#---------------------------------------------
+#-----------JWT AUTH------------
+#---------------------------------------------
+
+###
+POST  http://127.0.0.1:8000/access
+Content-Type: application/json
+
+{
+    "username":"user5@gmail.com",
+    "password":"user5123"
+}
+
+# @access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg4NTMyNjcyLCJpYXQiOjE3ODg1MzIzNzIsImp0aSI6ImY1ZDllNTg1YTcxZTQxOWE4YWQ1ZjFmYjAyZDBmMTFjIiwidXNlcl9pZCI6IjYifQ.pPef3EQbK3uNIy9Ea_NfvUYvRCNuZgY_msXTAkRNhFw
+
+
+
+###
+POST http://127.0.0.1:8000/refresh
+Content-Type: application/json
+
+{
+    "refresh":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4ODYxOTE1OCwiaWF0IjoxNzg4NTMyNzU4LCJqdGkiOiJjYTIwYTc5MjkzOGU0MzUzODhkYjU0YzQ1NDU0YTUwOCIsInVzZXJfaWQiOiI2In0.SuHan2aZxvDmNWYNSzdG2TniNoc8twIm59Wn8NiBlfI"
+}
+
+@access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg4NTMzMTU4LCJpYXQiOjE3ODg1MzI4NTgsImp0aSI6IjBjYzk4NGVhYmU2ZDRiOTg5NzIxNjhlMThlMjcwODcyIiwidXNlcl9pZCI6IjYifQ.b7nK3eKk4-E7Mvb2DVZcCGldjGOjoQhnXEz17DJsogU
+# ###
+# POST  http://127.0.0.1:8000/foodlog/access
+# Content-Type: application/json
+

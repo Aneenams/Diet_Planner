@@ -1,11 +1,14 @@
 from django.shortcuts import render
-from rest_framework.generics import CreateAPIView,RetrieveAPIView,UpdateAPIView,ListCreateAPIView,ListAPIView
+from rest_framework.generics import CreateAPIView,RetrieveAPIView,UpdateAPIView,ListCreateAPIView,ListAPIView,DestroyAPIView
 from dietApp.serializers import UserSerializer,ProfileSerializer,FoodLogSerializer
 from rest_framework import authentication,permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from dietApp.models import FoodLog
 from django.utils import timezone
+from datetime import timedelta
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from dietApp.utility import analyze_food
 # Create your views here.
 
 
@@ -64,17 +67,70 @@ class FoodLogCreateListView(CreateAPIView,ListAPIView):
     def get_queryset(self):
         cur_date=timezone.now().date()
         print(cur_date)
+        yesterday=cur_date-timedelta(days=1)
+        print(yesterday)
+        
+        seven_day=cur_date-timedelta(days=7)  
+
+        params=self.request.query_params
         # return FoodLog.objects.filter(user=self.request.user,created_at=cur_date)
-        return self.request.user.food_log.all()
-        # return self.request.user.food_log.filter(created_at=cur_date)
+        # return self.request.user.food_log.all()
+        if "start_date" and "end_date" in self.request.query_params:
+            start_date=self.request.get("start_date")
+            end_date=self.request.get("end_date")
+            return self.request.user.food_log.filter(created_at__date__gte=start_date,created_at__date__lte=end_date)
+        if "filter_type" in params:
+            if params['filter_type']=="yesterday":
+                return self.request.user.food_log.filter(created_at__date=yesterday)
+
+            elif params['filter_type']=="seven_day":
+                return self.request.user.food_log.filter(created_at__date__gte=seven_day,created_at__date__lte=cur_date)    
+        return self.request.user.food_log.filter(created_at__date=cur_date)
+    
 
 
-class FoodLogDetailView(APIView):
+# class FoodLogDetailView(APIView):
+
+
+#     authentication_classes=[authentication.TokenAuthentication]
+#     permission_classes=[permissions.IsAuthenticated]
+
+#     def get(self,request,*args,**kwargs):
+#         id=kwargs.get("id")      
+#         food=FoodLog.objects.get(id=id)
+#         serializer=FoodLogSerializer(food)
+#         return Response(data=serializer.data)
+
+
+class FoodLogDetailView(RetrieveAPIView,UpdateAPIView,DestroyAPIView):
+    # authentication_classes=[authentication.TokenAuthentication]
+    authentication_classes=[JWTAuthentication]
+    permission_classes=[permissions.IsAuthenticated]
+    serializer_class=FoodLogSerializer
+    queryset=FoodLog.objects.all()
+
+
+class FoodScanView(APIView):
     authentication_classes=[authentication.TokenAuthentication]
     permission_classes=[permissions.IsAuthenticated]
 
-    def get(self,request,*args,**kwargs):
-        id=kwargs.get("id")      
-        food=FoodLog.objects.get(id=id)
-        serializer=FoodLogSerializer(food)
-        return Response(data=serializer.data)
+
+    def post(self,request,*args,**kwargs):
+        form_data=request.data
+        print(form_data)
+
+        image=form_data.get("image")
+        print(type(image))
+        try:
+            res=analyze_food(image)
+            print(res)
+            title=res.get("foodname")
+            calorie=res.get("averagecalorie")
+            mealtype=res.get("mealtype")
+            food=FoodLog.objects.create(title=title,calories=calorie,meal_type=mealtype,user=request.user,image=image)
+            serializer=FoodLogSerializer(food)
+            return Response(data=serializer.data)
+            
+        except Exception as e:
+            print(e)    
+        return Response({'msg':'image scanning...'})

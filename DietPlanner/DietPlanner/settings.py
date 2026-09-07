@@ -137,3 +137,6 @@ AUTH_USER_MODEL="dietApp.User"
 AUTHENTICATION_BACKENDS=["django.contrib.auth.backends.ModelBackend",
                          "dietApp.backends.EmailBackend",
                          "dietApp.backends.PhoneBackend"]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
