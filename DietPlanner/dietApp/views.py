@@ -8,7 +8,10 @@ from dietApp.models import FoodLog
 from django.utils import timezone
 from datetime import timedelta
 from rest_framework_simplejwt.authentication import JWTAuthentication
+<<<<<<< HEAD
 from dietApp.utility import analyze_food
+=======
+>>>>>>> f911c100b2cd2d5d84d835799fe9da880383e507
 # Create your views here.
 
 
@@ -108,29 +111,3 @@ class FoodLogDetailView(RetrieveAPIView,UpdateAPIView,DestroyAPIView):
     permission_classes=[permissions.IsAuthenticated]
     serializer_class=FoodLogSerializer
     queryset=FoodLog.objects.all()
-
-
-class FoodScanView(APIView):
-    authentication_classes=[authentication.TokenAuthentication]
-    permission_classes=[permissions.IsAuthenticated]
-
-
-    def post(self,request,*args,**kwargs):
-        form_data=request.data
-        print(form_data)
-
-        image=form_data.get("image")
-        print(type(image))
-        try:
-            res=analyze_food(image)
-            print(res)
-            title=res.get("foodname")
-            calorie=res.get("averagecalorie")
-            mealtype=res.get("mealtype")
-            food=FoodLog.objects.create(title=title,calories=calorie,meal_type=mealtype,user=request.user,image=image)
-            serializer=FoodLogSerializer(food)
-            return Response(data=serializer.data)
-            
-        except Exception as e:
-            print(e)    
-        return Response({'msg':'image scanning...'})

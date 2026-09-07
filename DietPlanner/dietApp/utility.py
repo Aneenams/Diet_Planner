@@ -19,7 +19,7 @@ def analyze_food(image):
         return {"error": "No image provided"}
 
     # Initialize Client
-    client = genai.Client(api_key=GOOGLE_API_KEY)
+    client = genai.Client(api_key=api_key)
 
     # Read image binary data and grab mime-type (defaults to image/jpeg)
     image_bytes = image.read()

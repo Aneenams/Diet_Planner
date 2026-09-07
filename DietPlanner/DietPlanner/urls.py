@@ -30,6 +30,5 @@ urlpatterns = [
     # path('foodlog/detail/<int:id>',views.FoodLogCreateListView.as_view()),
     path('foodlog/detail/<int:pk>',views.FoodLogDetailView.as_view()),
     path('access',TokenObtainPairView.as_view()),
-    path('refresh',TokenRefreshView.as_view()),
-    path('food/scan',views.FoodScanView.as_view())
+    path('refresh',TokenRefreshView.as_view())
 ]
